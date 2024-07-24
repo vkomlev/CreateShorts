@@ -1,0 +1,28 @@
+from moviepy.editor import *
+from PIL import Image as PILImage
+import textwrap
+import numpy as np
+
+def resize_image(image_path, new_size):
+    """
+    Изменяет размер изображения, используя Pillow, и возвращает его в формате массива.
+    """
+    with PILImage.open(image_path) as img:
+        img = img.resize(new_size, PILImage.Resampling.LANCZOS)
+        return np.array(img)
+
+def create_code_clip(code_text, fontsize=24, color='white', stroke_color='black', stroke_width=1, font='Arial.ttf', size=(1080, 1920)):
+    """
+    Создает клип с текстом кода, который будет появляться с эффектом набора текста.
+    """
+    def typewriter_effect(get_frame, t):
+        n_chars = int(t * len(code_text) / 10)  # количество символов в зависимости от времени
+        current_text = textwrap.fill(code_text[:n_chars], width=60)  # оборачиваем текст
+        text_clip = TextClip(current_text, fontsize=fontsize, color=color, stroke_color=stroke_color,
+                             stroke_width=stroke_width, font=font, size=size, bg_color='black')
+        return text_clip.get_frame(t)
+    
+    duration = min(len(code_text) / 10.0, 60)  # длительность клипа
+    code_clip = TextClip(code_text, fontsize=fontsize, color=color, stroke_color=stroke_color,
+                         stroke_width=stroke_width, font=font, size=size, bg_color='black').set_duration(duration)
+    return code_clip.fl(typewriter_effect, apply_to=['mask'])
