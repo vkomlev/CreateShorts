@@ -1,6 +1,22 @@
 from moviepy.editor import *
 from moviepy.video.tools.subtitles import SubtitlesClip
 import pysrt
+import random
+
+# Константы размера видео
+VIDEO_WIDTH = 720
+VIDEO_HEIGHT = 1280
+
+def resize_and_crop(image_clip):
+    # Изменение размера с сохранением пропорций
+        if abs(image_clip.h - VIDEO_HEIGHT) < abs(image_clip.w - VIDEO_WIDTH):
+            image_clip = image_clip.resize(height=VIDEO_HEIGHT)
+        else:
+            image_clip = image_clip.resize(width=VIDEO_WIDTH)
+        
+        # Обрезка лишней части
+        #image_clip = image_clip.crop(x_center=image_clip.w / 2, y_center=image_clip.h / 2, width=VIDEO_WIDTH, height=VIDEO_HEIGHT)
+        return image_clip
 
 def create_video(layout_file, subtitles_file=None, audio_file=None, subtitle_coords=None, subtitle_style=None):
     clips = []
@@ -13,14 +29,22 @@ def create_video(layout_file, subtitles_file=None, audio_file=None, subtitle_coo
             start, end = map(float, timecode.split('-'))
             img_clip = ImageClip(image_path).set_duration(end - start).set_start(start)
 
+            # Изменение размера и обрезка изображения
+            img_clip = resize_and_crop(img_clip)
+
             # Добавление эффекта перехода
-            if i > 0:
-                img_clip = img_clip.crossfadein(1)
+            if i > 0 and img_clip:
+                transition_effect = random.choice([img_clip.crossfadein, img_clip.fadein, img_clip.fadeout])
+                img_clip = transition_effect(1)
             
             clips.append(img_clip)
 
     # Объединение клипов с эффектами переходов
     video = concatenate_videoclips(clips, method="compose", padding=-1, bg_color=(0, 0, 0))
+
+    # Ограничение длительности видео одной минутой
+    video_duration = min(video.duration, 60)
+    video = video.subclip(0, video_duration)
 
     # Добавление субтитров
     if subtitles_file:
@@ -33,7 +57,7 @@ def create_video(layout_file, subtitles_file=None, audio_file=None, subtitle_coo
 
             # Настройки субтитров
             txt_clip = TextClip(sub.text, fontsize=24, color=subtitle_style.get('color', 'white'), 
-                                stroke_color=subtitle_style.get('stroke_color', 'yellow'),
+                                stroke_color=subtitle_style.get('stroke_color', 'white'),
                                 stroke_width=subtitle_style.get('stroke_width', 1),
                                 font=subtitle_style.get('font', 'Arial'))
             txt_clip = txt_clip.set_position(subtitle_coords if subtitle_coords else ('center', 'bottom')).set_duration(end - start).set_start(start)

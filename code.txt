@@ -1,28 +1,19 @@
-from moviepy.editor import *
-from PIL import Image as PILImage
-import textwrap
-import numpy as np
+# Переменные используются для хранения данных
+a = 5  # Присваиваем значение 5 переменной a
+b = 3  # Присваиваем значение 3 переменной b
 
-def resize_image(image_path, new_size):
-    """
-    Изменяет размер изображения, используя Pillow, и возвращает его в формате массива.
-    """
-    with PILImage.open(image_path) as img:
-        img = img.resize(new_size, PILImage.Resampling.LANCZOS)
-        return np.array(img)
+# Операторы выполняют действия над переменными
+# Например, оператор "+" складывает значения
+c = a + b  # Суммируем a и b, результат сохраняем в c
 
-def create_code_clip(code_text, fontsize=24, color='white', stroke_color='black', stroke_width=1, font='Arial.ttf', size=(1080, 1920)):
-    """
-    Создает клип с текстом кода, который будет появляться с эффектом набора текста.
-    """
-    def typewriter_effect(get_frame, t):
-        n_chars = int(t * len(code_text) / 10)  # количество символов в зависимости от времени
-        current_text = textwrap.fill(code_text[:n_chars], width=60)  # оборачиваем текст
-        text_clip = TextClip(current_text, fontsize=fontsize, color=color, stroke_color=stroke_color,
-                             stroke_width=stroke_width, font=font, size=size, bg_color='black')
-        return text_clip.get_frame(t)
-    
-    duration = min(len(code_text) / 10.0, 60)  # длительность клипа
-    code_clip = TextClip(code_text, fontsize=fontsize, color=color, stroke_color=stroke_color,
-                         stroke_width=stroke_width, font=font, size=size, bg_color='black').set_duration(duration)
-    return code_clip.fl(typewriter_effect, apply_to=['mask'])
+# Выражения состоят из переменных и операторов
+# В данном случае "a + b" - это выражение
+
+# Инструкции - это завершенные команды, которые выполняет интерпретатор
+# В следующей инструкции выводим результат на экран
+print("Сумма a и b:", c)  # Выводим текст и значение переменной c
+
+# Также можно использовать другие операторы, например, вычитание
+d = a - b  # Результат вычитания b из a сохраняем в d
+
+print("Разность a и b:", d)  # Выводим результат вычитания
