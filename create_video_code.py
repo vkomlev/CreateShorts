@@ -7,8 +7,8 @@ from moviepy.video.VideoClip import TextClip
 VIDEO_WIDTH = 720
 VIDEO_HEIGHT = 1280
 FONT_SIZE = 24
-BACKGROUND_COLOR = (70, 70, 70)  # Серый цвет
-VIDEO_DURATION = 60  # Максимальная длительность видео в секундах
+BACKGROUND_COLOR = (35, 35, 35)  # Серый цвет
+VIDEO_DURATION = 58  # Максимальная длительность видео в секундах
 TEXT_FILE = 'code.txt'  # Путь к текстовому файлу с кодом
 AUDIO_FILE = 'audio.mp3'  # Путь к аудиофайлу с озвучкой
 
@@ -24,7 +24,7 @@ def create_text_clip(text, duration):
         text,
         fontsize=FONT_SIZE,
         font='Consolas',
-        color='lightblue',
+        color='aqua',
         bg_color='rgb' + str(BACKGROUND_COLOR),
         size=(VIDEO_WIDTH, VIDEO_HEIGHT),
         method='caption',
@@ -49,7 +49,7 @@ def generate_video(code_lines):
         else:
             line += char
         # Случайная задержка для имитации набора текста
-        delay = random.uniform(0.01, 0.2)
+        delay = random.uniform(0.01, 0.13)
         # Создаем текстовый клип и добавляем его к списку
         text_clip = create_text_clip(line, delay)
         clips.append(text_clip)
