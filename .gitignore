@@ -1,5 +1,4 @@
 .venv/*
 images/*
-*.jpg
-*.mp3
-*.mp4
+*.jpg*
+*.mp*

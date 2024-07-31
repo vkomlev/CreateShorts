@@ -49,7 +49,7 @@ def generate_video(code_lines):
         else:
             line += char
         # Случайная задержка для имитации набора текста
-        delay = random.uniform(0.01, 0.13)
+        delay = random.uniform(0.01, 0.09)
         # Создаем текстовый клип и добавляем его к списку
         text_clip = create_text_clip(line, delay)
         clips.append(text_clip)
