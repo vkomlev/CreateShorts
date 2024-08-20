@@ -14,12 +14,12 @@ import os
 # Константы
 VIDEO_WIDTH = 720
 VIDEO_HEIGHT = 1280
-FONT_SIZE = 22
-BACKGROUND_COLOR = (240, 240, 240)  # Серый цвет
+FONT_SIZE = 24
+BACKGROUND_COLOR = (35, 35, 35)  # Темно-серый цвет
 VIDEO_DURATION = 58  # Максимальная длительность видео в секундах
 TEXT_FILE = 'code.txt'  # Путь к текстовому файлу с кодом
 AUDIO_FILE = 'audio.mp3'  # Путь к аудиофайлу с озвучкой
-MAX_INTERVAL = 0.15 # Максимальная задержка между вводом символов
+MAX_INTERVAL = 0.12 # Максимальная задержка между вводом символов
 
 hti = Html2Image()
 
@@ -42,33 +42,16 @@ def create_text_clip(text, duration):
     # Подсветка синтаксиса с помощью Pygments
     lexer = PythonLexer()
     # Устанавливаем стиль форматтера с темным фоном и большим шрифтом
-    formatter = HtmlFormatter(style='colorful', full=True, noclasses=True,
+    formatter = HtmlFormatter(style='monokai', full=True, noclasses=True,
                               cssclass="source",
-                              prestyles=f"background: rgb({BACKGROUND_COLOR[0]}, {BACKGROUND_COLOR[1]}, {BACKGROUND_COLOR[2]}); font-size: {FONT_SIZE}px;")
+                              #prestyles=f"background: rgb({BACKGROUND_COLOR[0]}, {BACKGROUND_COLOR[1]}, {BACKGROUND_COLOR[2]}); font-size: {FONT_SIZE}px;",
+                              prestyles=f"font-size: {FONT_SIZE}px;",
+                              )
     highlighted_code = highlight(text, lexer, formatter)
-     # Оборачиваем код в HTML с установленным фоном для всего документа
-    html_template = f"""
-    <html>
-    <head>
-    <style>
-    body {{
-        background-color: rgb({BACKGROUND_COLOR[0]}, {BACKGROUND_COLOR[1]}, {BACKGROUND_COLOR[2]});
-        margin: 0;
-        padding: 0;
-    }}
-    pre {{
-        font-size: {FONT_SIZE}px;
-    }}
-    </style>
-    </head>
-    <body>
-    {highlighted_code}
-    </body>
-    </html>
-    """
+    
     # Использование html2image для конвертации HTML в изображение
     temp_image_path = 'temp.png'
-    hti.screenshot(html_str=html_template, save_as=temp_image_path, size=(VIDEO_WIDTH, VIDEO_HEIGHT))
+    hti.screenshot(html_str=highlighted_code, save_as=temp_image_path, size=(VIDEO_WIDTH, VIDEO_HEIGHT))
     
     if os.path.exists(temp_image_path):
         img = Image.open(temp_image_path)
