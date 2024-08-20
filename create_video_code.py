@@ -19,6 +19,7 @@ BACKGROUND_COLOR = (240, 240, 240)  # Серый цвет
 VIDEO_DURATION = 58  # Максимальная длительность видео в секундах
 TEXT_FILE = 'code.txt'  # Путь к текстовому файлу с кодом
 AUDIO_FILE = 'audio.mp3'  # Путь к аудиофайлу с озвучкой
+MAX_INTERVAL = 0.15 # Максимальная задержка между вводом символов
 
 hti = Html2Image()
 
@@ -26,6 +27,13 @@ def load_code_from_file(file_path):
     """Загрузка текста из файла."""
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
+
+def create_background_clip(duration):
+    """Создание пустого клипа с заданным фоном."""
+    img = Image.new('RGB', (VIDEO_WIDTH, VIDEO_HEIGHT), BACKGROUND_COLOR)
+    img_array = PIL_to_npimage(img)
+    clip = ImageClip(img_array, duration=duration)
+    return clip
 
 def create_text_clip(text, duration):
     """Создание клипа с текстом."""
@@ -78,9 +86,13 @@ def create_text_clip(text, duration):
 def generate_video(code_lines):
     """Генерация видео с текстом и озвучкой."""
     clips = []
+    # Добавляем пустой кадр с фоном в начало видео
+    background_clip = create_background_clip(1)
+    clips.append(background_clip)
+
     total_time = 0
     line_num = 1
-    line = f'\n {line_num}. '
+    line = f'\n {line_num}.  '
     percent = 0
     for char in code_lines:
         # Формируем текст с учетом новых строк
@@ -92,7 +104,7 @@ def generate_video(code_lines):
         else:
             line += char
         # Случайная задержка для имитации набора текста
-        delay = random.uniform(0.01, 0.12)
+        delay = random.uniform(0.01, MAX_INTERVAL)
         # Создаем текстовый клип и добавляем его к списку
         text_clip = create_text_clip(line, delay)
         clips.append(text_clip)
