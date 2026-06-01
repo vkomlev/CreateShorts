@@ -2,3 +2,5 @@
 images/*
 *.jpg*
 *.mp*
+audio.mp3
+.cursor/
