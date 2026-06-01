@@ -9,6 +9,7 @@ from pygments.formatters import HtmlFormatter
 from PIL import Image
 from io import BytesIO
 from html2image import Html2Image
+import imgkit
 import os
 
 # Константы
@@ -21,7 +22,7 @@ TEXT_FILE = 'code.txt'  # Путь к текстовому файлу с код�
 AUDIO_FILE = 'audio.mp3'  # Путь к аудиофайлу с озвучкой
 MAX_INTERVAL = 0.12 # Максимальная задержка между вводом символов
 
-hti = Html2Image()
+#hti = Html2Image()
 
 def load_code_from_file(file_path):
     """Загрузка текста из файла."""
@@ -44,14 +45,13 @@ def create_text_clip(text, duration):
     # Устанавливаем стиль форматтера с темным фоном и большим шрифтом
     formatter = HtmlFormatter(style='monokai', full=True, noclasses=True,
                               cssclass="source",
-                              #prestyles=f"background: rgb({BACKGROUND_COLOR[0]}, {BACKGROUND_COLOR[1]}, {BACKGROUND_COLOR[2]}); font-size: {FONT_SIZE}px;",
                               prestyles=f"font-size: {FONT_SIZE}px;",
                               )
     highlighted_code = highlight(text, lexer, formatter)
-    
     # Использование html2image для конвертации HTML в изображение
     temp_image_path = 'temp.png'
-    hti.screenshot(html_str=highlighted_code, save_as=temp_image_path, size=(VIDEO_WIDTH, VIDEO_HEIGHT))
+    #hti.screenshot(html_str=highlighted_code, save_as=temp_image_path, size=(VIDEO_WIDTH, VIDEO_HEIGHT))
+    imgkit.from_string(highlighted_code, temp_image_path, options={"width": VIDEO_WIDTH, "height": VIDEO_HEIGHT})
     
     if os.path.exists(temp_image_path):
         img = Image.open(temp_image_path)
