@@ -5,3 +5,5 @@ images/*
 audio.mp3
 .cursor/
 output/
+__pycache__/
+*.pyc
