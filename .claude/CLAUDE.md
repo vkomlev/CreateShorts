@@ -4,14 +4,15 @@
 - Python, moviepy, ffmpeg
 
 ## Контекст проекта
-Сборка коротких вертикальных видео (720×1280, до ~60 с) из кадров, аудио, субтитров.
+Сборка коротких вертикальных видео из кадров, аудио, субтитров. Publish-ready нарезка
+`reframe.py` — 1080×1920; старые `create_*`-сценарии сохраняют свои размеры.
 Сценарии: слайд-видео (`create_video.py`), видео с набором кода (`create_video_code.py`),
 нарезка реального видео в вертикаль (`reframe.py` — пайплайн tsk-099).
 
 ## Структура каталога
 - `create_video.py` — слайд-видео: `layouts.txt` + `subtitles.srt` + `audio.mp3`
 - `create_video_code.py` — видео набора кода: `code.txt` + `audio.mp3`
-- `reframe.py` — нарезка 16:9 → клипы 9:16 (720×1280) по `segments.txt` (letterbox/track)
+- `reframe.py` — нарезка 16:9 → клипы 9:16 (1080×1920) по `segments.txt` (letterbox/track), опционально с прожигом `--srt`
 - `segments.example.txt` — пример контракта `segments.txt`
 - `layouts.txt` — таймлайн слайдов: `начало-конец,путь_к_изображению`
 - `images/` — кадры для слайд-видео
@@ -29,14 +30,15 @@
 
 **Scope:** `create_video.py`, `create_video_code.py`, `reframe.py`
 
-**reframe.py:** `python reframe.py <видео> <segments.txt> [--out output/clips]`.
+**reframe.py:** `python reframe.py <видео> <segments.txt> [--srt <транскрипт.srt>] [--out output/clips]`.
 Чистый ffmpeg (без moviepy), ffmpeg из PATH или env `FFMPEG`. segments.txt:
 `start-end,mode[,cx:cy:cw:ch]`, mode = letterbox|track. Контракт и стратегии —
-ContentFactory ADR-0003.
+ContentFactory ADR-0003. Для `--srt` нужен фильтр ffmpeg `subtitles` (`libass`);
+Windows-путь к временному SRT экранируется внутри `reframe.py`.
 
 **Валидация:**
 ```powershell
-python -m compileall create_video.py create_video_code.py
+python -m compileall create_video.py create_video_code.py reframe.py
 ```
 
 **Runtime:**

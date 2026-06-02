@@ -3,7 +3,7 @@
 Project: Make_video
 Path: `d:\Work\Make_video`
 Created: 2026-05-26
-Profile updated: 2026-05-27
+Profile updated: 2026-06-02
 
 ## Purpose
 
@@ -13,12 +13,14 @@ Profile updated: 2026-05-27
 ## AI-Facing Profile
 
 - Stack: Python, moviepy, pillow, pysrt, Pygments, html2image/imgkit, imageio-ffmpeg.
-- Output format is vertical short video: `720x1280`, usually capped around 58-60 seconds.
+- Publish-ready `reframe.py` output is `1080x1920`; legacy `create_*` scripts keep their own
+  `720x1280` output settings. Videos are usually capped around 58-60 seconds.
 - Main scripts:
   - `create_video.py`: builds a slide-based video from `layouts.txt`, optional `subtitles.srt`, and `audio.mp3`.
   - `create_video_code.py`: builds a code-typing style video from `code.txt` and `audio.mp3`.
-  - `reframe.py`: cut a 16:9 source video into vertical 720x1280 clips per `segments.txt`
-    (letterbox/track). Pure ffmpeg via subprocess (no moviepy); ffmpeg from PATH or env `FFMPEG`.
+  - `reframe.py`: cut a 16:9 source video into vertical 1080x1920 clips per `segments.txt`
+    (letterbox/track), optionally burning sliced and rebased `--srt` subtitles. Pure ffmpeg via
+    subprocess (no moviepy); ffmpeg from PATH or env `FFMPEG`; subtitles require libass.
     Part of the vertical-video pipeline (ContentFactory tsk-099, ADR-0003).
 - Default output: `output_video.mp4` (create_* scripts); `output/clips/<stem>_NN_<mode>.mp4` (reframe).
 - Expected local input files are project-root files, not command-line arguments.
@@ -35,6 +37,7 @@ Profile updated: 2026-05-27
 - Setup: `python -m venv .venv`; `.venv\Scripts\activate`; `pip install -r requirements.txt`.
 - Slide video: `python create_video.py`.
 - Code demo video: `python create_video_code.py`.
+- Reframe video: `python reframe.py <video> <segments.txt> [--srt <transcript.srt>] --out output/clips`.
 - Smoke checks:
   - verify required inputs exist before running;
   - run on a tiny sample input first;
@@ -54,6 +57,7 @@ Profile updated: 2026-05-27
 - Core modules: `create_video.py`, `create_video_code.py`.
 - Data/storage: local input files in project root; generated `output_video.mp4`; transient `temp.png`.
 - External tools: ffmpeg through moviepy/imageio; imgkit may require wkhtmltoimage or equivalent local binary depending on environment.
+- Reframe subtitles use ffmpeg `subtitles` (libass); Windows drive colons must be escaped inside the filter path.
 - Trust boundaries: local file paths, generated media artifacts, temporary files, and any voice/audio assets supplied by the operator.
 
 ## Known Risks
@@ -77,6 +81,7 @@ Profile updated: 2026-05-27
 | --- | --- | --- | --- |
 | 2026-05-27 | Treat root input filenames as script contracts. | Current scripts read fixed filenames without CLI args. | Project profile |
 | 2026-06-02 | reframe.py uses pure ffmpeg (no moviepy), two strategies (letterbox/track) via segments.txt. | Reframe of wide UI to 9:16 is an ffmpeg job; keeps it decoupled from moviepy render. | tsk-099 / ADR-0003 |
+| 2026-06-02 | reframe.py outputs 1080x1920 and optionally burns sliced `--srt` subtitles in the same ffmpeg pass. | Produce publish-ready clips without rebuilding the Make_video venv or adding Python dependencies. | tsk-099 F3 |
 
 ## Prevention Register
 
@@ -84,7 +89,8 @@ Profile updated: 2026-05-27
 | --- | --- | --- | --- |
 | 2026-05-27 | Video generation fails due to missing local input. | Preflight required files before running and report missing files explicitly. | `qa-report`, `qa-fix` |
 | 2026-05-27 | Generated video has unreadable text/subtitles. | Include visual smoke check for first/last seconds and subtitle readability. | `qa-report` |
-| 2026-06-02 | With ffmpeg `-filter_complex`, output-side `-t` drops the whole video stream (0 frames, empty file, exit 0). | Put both `-ss` and `-t` BEFORE `-i` (input options) when cutting + filtering. | `qa-fix` |
+| 2026-06-02 | With ffmpeg `-filter_complex`, output-side `-t` can drop video while input-side `-t` can drop audio on VLC MP4 recordings. | Use input-side `-ss` only for non-zero starts; enforce duration with video `trim` and audio `atrim`, then reset PTS. | `qa-fix` |
+| 2026-06-02 | ffmpeg `subtitles=` cannot open a Windows path when the drive colon is passed raw. | Escape the resolved SRT path for the filter (`C\:/...`) and keep temporary SRT names simple. | `encoding-guard`, `qa-fix` |
 
 ## Handoff Notes
 

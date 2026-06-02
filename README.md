@@ -47,18 +47,21 @@ python create_video_code.py
 
 ### Нарезка реального видео в вертикаль (reframe.py)
 
-Режет исходное видео 16:9 на вертикальные клипы 720×1280 (пайплайн вертикальных
+Режет исходное видео 16:9 на вертикальные клипы 1080×1920 (пайплайн вертикальных
 видео). Две стратегии на каждый сегмент: `letterbox` (видео целиком + размытый
 фон) и `track` (crop области → масштаб). Чистый ffmpeg, нужен ffmpeg в `PATH`
-(или переменная `FFMPEG`).
+(или переменная `FFMPEG`). Опция `--srt` нарезает исходные субтитры по сегментам,
+переносит их начало к нулю и прожигает в клипы через ffmpeg `libass`.
 
 ```powershell
-python reframe.py "путь\к\видео.mp4" segments.example.txt --out output\clips
+python reframe.py "путь\к\видео.mp4" segments.example.txt --srt "путь\к\транскрипту.srt" --out output\clips
 ```
 
 `segments.txt` — по строке на сегмент: `start-end,mode[,cx:cy:cw:ch]`
 (`mode` = `letterbox` | `track`; для `track` обязателен crop). Пример —
 [`segments.example.txt`](segments.example.txt). Клипы пишутся в `output/clips/`.
+Без `--srt` клипы создаются без субтитров. Для прожига нужен фильтр ffmpeg
+`subtitles`; `reframe.py` сам экранирует двоеточие диска в Windows-пути.
 
 ## Входы и выход
 
