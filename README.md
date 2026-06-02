@@ -45,6 +45,21 @@ python create_video_code.py
 - `code.txt` — исходный код (подсвечивается как Python);
 - `audio.mp3` — озвучка.
 
+### Нарезка реального видео в вертикаль (reframe.py)
+
+Режет исходное видео 16:9 на вертикальные клипы 720×1280 (пайплайн вертикальных
+видео). Две стратегии на каждый сегмент: `letterbox` (видео целиком + размытый
+фон) и `track` (crop области → масштаб). Чистый ffmpeg, нужен ffmpeg в `PATH`
+(или переменная `FFMPEG`).
+
+```powershell
+python reframe.py "путь\к\видео.mp4" segments.example.txt --out output\clips
+```
+
+`segments.txt` — по строке на сегмент: `start-end,mode[,cx:cy:cw:ch]`
+(`mode` = `letterbox` | `track`; для `track` обязателен crop). Пример —
+[`segments.example.txt`](segments.example.txt). Клипы пишутся в `output/clips/`.
+
 ## Входы и выход
 
 | Файл | Назначение | Используется в |

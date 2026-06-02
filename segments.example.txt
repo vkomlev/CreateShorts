@@ -1,0 +1,10 @@
+# Пример segments.txt для reframe.py (пайплайн вертикальных видео, tsk-099)
+# Формат строки: start-end,mode[,cx:cy:cw:ch]
+#   start/end — секунды (12.5) или H:MM:SS(.ms)
+#   mode      — letterbox | track
+#   crop      — cx:cy:cw:ch исходника (обязателен для track)
+#
+# letterbox: видео целиком по ширине + размытый фон до 1280 (универсально)
+0-8,letterbox
+# track: crop области исходника -> 720x1280 (крупнее; для 1920x1080 это 9:16-окно)
+10-18,track,656:0:608:1080

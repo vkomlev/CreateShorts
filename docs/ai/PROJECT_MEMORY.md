@@ -17,7 +17,10 @@ Profile updated: 2026-05-27
 - Main scripts:
   - `create_video.py`: builds a slide-based video from `layouts.txt`, optional `subtitles.srt`, and `audio.mp3`.
   - `create_video_code.py`: builds a code-typing style video from `code.txt` and `audio.mp3`.
-- Default output: `output_video.mp4`.
+  - `reframe.py`: cut a 16:9 source video into vertical 720x1280 clips per `segments.txt`
+    (letterbox/track). Pure ffmpeg via subprocess (no moviepy); ffmpeg from PATH or env `FFMPEG`.
+    Part of the vertical-video pipeline (ContentFactory tsk-099, ADR-0003).
+- Default output: `output_video.mp4` (create_* scripts); `output/clips/<stem>_NN_<mode>.mp4` (reframe).
 - Expected local input files are project-root files, not command-line arguments.
 
 ## Durable Context
@@ -73,6 +76,7 @@ Profile updated: 2026-05-27
 | Date | Decision | Why | Owner/Source |
 | --- | --- | --- | --- |
 | 2026-05-27 | Treat root input filenames as script contracts. | Current scripts read fixed filenames without CLI args. | Project profile |
+| 2026-06-02 | reframe.py uses pure ffmpeg (no moviepy), two strategies (letterbox/track) via segments.txt. | Reframe of wide UI to 9:16 is an ffmpeg job; keeps it decoupled from moviepy render. | tsk-099 / ADR-0003 |
 
 ## Prevention Register
 
@@ -80,6 +84,7 @@ Profile updated: 2026-05-27
 | --- | --- | --- | --- |
 | 2026-05-27 | Video generation fails due to missing local input. | Preflight required files before running and report missing files explicitly. | `qa-report`, `qa-fix` |
 | 2026-05-27 | Generated video has unreadable text/subtitles. | Include visual smoke check for first/last seconds and subtitle readability. | `qa-report` |
+| 2026-06-02 | With ffmpeg `-filter_complex`, output-side `-t` drops the whole video stream (0 frames, empty file, exit 0). | Put both `-ss` and `-t` BEFORE `-i` (input options) when cutting + filtering. | `qa-fix` |
 
 ## Handoff Notes
 

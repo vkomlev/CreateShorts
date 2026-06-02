@@ -4,3 +4,4 @@ images/*
 *.mp*
 audio.mp3
 .cursor/
+output/
