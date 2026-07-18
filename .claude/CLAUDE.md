@@ -21,7 +21,8 @@
 
 ## Указатели
 - `docs/ai/PROJECT_MEMORY.md` — durable-память (риски, smoke-проверки, решения). Общая с Codex
-- `README.md`, `docs/usage.md` — human-слой: запуск, форматы входов, константы
+- `docs/ai/glossary.md` — доменные термины (сегмент, letterbox/track, layouts.txt-таймлайн)
+- `README.md`, `docs/usage.md`, `docs/configuration.md`, `docs/troubleshooting.md` — human-слой: запуск, форматы входов, константы, переменные окружения, типовые проблемы
 - `AGENTS.md` — Codex-якорь (список skills)
 
 ---

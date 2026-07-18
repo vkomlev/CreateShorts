@@ -3,10 +3,10 @@ chardet==5.2.0
 charset-normalizer==3.3.2
 colorama==0.4.6
 decorator==4.4.2
-html2image==2.0.4.3
 idna==3.7
 imageio==2.34.2
 imageio-ffmpeg==0.5.1
+imgkit
 moviepy==1.0.3
 numpy==2.0.0
 pillow==10.4.0

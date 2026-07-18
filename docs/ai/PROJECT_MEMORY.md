@@ -12,7 +12,9 @@ Profile updated: 2026-06-02
 
 ## AI-Facing Profile
 
-- Stack: Python, moviepy, pillow, pysrt, Pygments, html2image/imgkit, imageio-ffmpeg.
+- Stack: Python, moviepy, pillow, pysrt, Pygments, imgkit, imageio-ffmpeg.
+  (`html2image` was imported historically but its call is commented out in
+  `create_video_code.py`; the live HTML→image backend is `imgkit`/wkhtmltoimage.)
 - Publish-ready `reframe.py` output is `1080x1920`; legacy `create_*` scripts keep their own
   `720x1280` output settings. Videos are usually capped around 58-60 seconds.
 - Main scripts:

@@ -84,6 +84,9 @@ python reframe.py "путь\к\видео.mp4" segments.example.txt --srt "пу�
 ## Документация
 
 - [docs/usage.md](docs/usage.md) — формат `layouts.txt`, настройка субтитров и константы скриптов
+- [docs/configuration.md](docs/configuration.md) — переменные окружения (`FFMPEG`)
+- [docs/troubleshooting.md](docs/troubleshooting.md) — типовые проблемы и их решения
+- [docs/ai/glossary.md](docs/ai/glossary.md) — доменные термины (сегмент, letterbox/track, layouts.txt-таймлайн)
 - [docs/ai/PROJECT_MEMORY.md](docs/ai/PROJECT_MEMORY.md) — durable-контекст для AI-агентов (риски, smoke-проверки, решения)
 
 ## Документная обвязка
